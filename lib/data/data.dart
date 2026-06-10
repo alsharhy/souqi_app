@@ -158,18 +158,30 @@ final List<Product> products = [
 
 Color getColor(String colorName, {int shade = 500}) {
   switch (colorName) {
-    case 'indigo': return Colors.indigo[shade] ?? Colors.indigo;
-    case 'rose': return Colors.pink[shade] ?? Colors.pink;
-    case 'amber': return Colors.amber[shade] ?? Colors.amber;
-    case 'emerald': return Colors.teal[shade] ?? Colors.teal;
-    case 'violet': return Colors.purple[shade] ?? Colors.purple;
-    case 'slate': return Colors.blueGrey[shade] ?? Colors.blueGrey;
-    case 'zinc': return Colors.grey[shade] ?? Colors.grey;
-    case 'yellow': return Colors.yellow[shade] ?? Colors.yellow;
-    case 'sky': return Colors.lightBlue[shade] ?? Colors.lightBlue;
-    case 'red': return Colors.red[shade] ?? Colors.red;
-    case 'orange': return Colors.orange[shade] ?? Colors.orange;
-    default: return Colors.blue;
+    case 'indigo':
+      return Colors.indigo[shade] ?? Colors.indigo;
+    case 'rose':
+      return Colors.pink[shade] ?? Colors.pink;
+    case 'amber':
+      return Colors.amber[shade] ?? Colors.amber;
+    case 'emerald':
+      return Colors.teal[shade] ?? Colors.teal;
+    case 'violet':
+      return Colors.purple[shade] ?? Colors.purple;
+    case 'slate':
+      return Colors.blueGrey[shade] ?? Colors.blueGrey;
+    case 'zinc':
+      return Colors.grey[shade] ?? Colors.grey;
+    case 'yellow':
+      return Colors.yellow[shade] ?? Colors.yellow;
+    case 'sky':
+      return Colors.lightBlue[shade] ?? Colors.lightBlue;
+    case 'red':
+      return Colors.red[shade] ?? Colors.red;
+    case 'orange':
+      return Colors.orange[shade] ?? Colors.orange;
+    default:
+      return Colors.blue;
   }
 }
 

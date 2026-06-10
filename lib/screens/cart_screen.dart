@@ -77,7 +77,14 @@ class CartScreen extends StatelessWidget {
                               gradient: getLightGradient(p.bg),
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: Center(child: Text(p.image, style: const TextStyle(fontSize: 40))),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Image.network(
+                                p.image,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
+                              ),
+                            ),
                           ),
                           const SizedBox(width: 16),
                           Expanded(

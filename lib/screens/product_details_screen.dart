@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/models.dart';
 import '../data/data.dart';
 
-class ProductDetailsScreen extends StatelessWidget {
+class ProductDetailsScreen extends StatefulWidget {
   final Product product;
   final Function(Product) onAddToCart;
   final Function(Product) onToggleFavorite;
@@ -17,8 +17,28 @@ class ProductDetailsScreen extends StatelessWidget {
   });
 
   @override
+  State<ProductDetailsScreen> createState() => _ProductDetailsScreenState();
+}
+
+class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
+  late bool _isFavorite;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFavorite = widget.isFavorite;
+  }
+
+  void _toggleFavorite() {
+    setState(() {
+      _isFavorite = !_isFavorite;
+    });
+    widget.onToggleFavorite(widget.product);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final catName = categories.firstWhere((c) => c.id == product.categoryId).name;
+    final catName = categories.firstWhere((c) => c.id == widget.product.categoryId).name;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -37,8 +57,8 @@ class ProductDetailsScreen extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
-                        getColor(product.bg, shade: 100),
-                        getColor(product.bg, shade: 50),
+                        getColor(widget.product.bg, shade: 100),
+                        getColor(widget.product.bg, shade: 50),
                         Colors.white,
                       ],
                     ),
@@ -54,7 +74,7 @@ class ProductDetailsScreen extends StatelessWidget {
                           height: 120,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: getColor(product.bg).withOpacity(0.08),
+                            color: getColor(widget.product.bg).withOpacity(0.08),
                           ),
                         ),
                       ),
@@ -66,14 +86,18 @@ class ProductDetailsScreen extends StatelessWidget {
                           height: 80,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: getColor(product.bg).withOpacity(0.06),
+                            color: getColor(widget.product.bg).withOpacity(0.06),
                           ),
                         ),
                       ),
-                      Center(
+                      Positioned.fill(
                         child: Hero(
-                          tag: 'product_${product.id}',
-                          child: Text(product.image, style: const TextStyle(fontSize: 160)),
+                          tag: 'product_${widget.product.id}',
+                          child: Image.network(
+                            widget.product.image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.image_not_supported, size: 80, color: Colors.grey)),
+                          ),
                         ),
                       ),
                     ],
@@ -107,15 +131,15 @@ class ProductDetailsScreen extends StatelessWidget {
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    getColor(product.bg).withOpacity(0.15),
-                                    getColor(product.bg).withOpacity(0.05),
+                                    getColor(widget.product.bg).withOpacity(0.15),
+                                    getColor(widget.product.bg).withOpacity(0.05),
                                   ],
                                 ),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Text(
                                 catName,
-                                style: TextStyle(color: getColor(product.bg), fontWeight: FontWeight.w700, fontSize: 12),
+                                style: TextStyle(color: getColor(widget.product.bg), fontWeight: FontWeight.w700, fontSize: 12),
                               ),
                             ),
                             Container(
@@ -134,7 +158,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                 ],
                               ),
                               child: Text(
-                                '${product.price} ر.س',
+                                '${widget.product.price} ر.س',
                                 style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.white),
                               ),
                             ),
@@ -142,7 +166,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         Text(
-                          product.name,
+                          widget.product.name,
                           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w900, color: Color(0xFF2D3142)),
                         ),
                         const SizedBox(height: 12),
@@ -158,14 +182,14 @@ class ProductDetailsScreen extends StatelessWidget {
                               const Icon(Icons.star_rounded, color: Color(0xFFFFA726), size: 20),
                               const SizedBox(width: 6),
                               Text(
-                                product.rating.toString(),
+                                widget.product.rating.toString(),
                                 style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFFF57C00), fontSize: 14),
                               ),
                               const SizedBox(width: 8),
                               Container(width: 1, height: 16, color: const Color(0xFFFFCC80)),
                               const SizedBox(width: 8),
                               Text(
-                                '${product.reviews} مراجعة',
+                                '${widget.product.reviews} مراجعة',
                                 style: const TextStyle(color: Color(0xFFF57C00), fontSize: 12, fontWeight: FontWeight.w600),
                               ),
                             ],
@@ -181,7 +205,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          product.description,
+                          widget.product.description,
                           style: const TextStyle(color: Color(0xFF9CA3AF), height: 1.8, fontSize: 14),
                         ),
                         const SizedBox(height: 120),
@@ -233,24 +257,24 @@ class ProductDetailsScreen extends StatelessWidget {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () => onToggleFavorite(product),
+                    onTap: _toggleFavorite,
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 200),
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        gradient: isFavorite
+                        gradient: _isFavorite
                             ? const LinearGradient(colors: [Color(0xFFFFE0E0), Color(0xFFFFCDD2)])
                             : null,
-                        color: isFavorite ? null : const Color(0xFFF0F2F8),
+                        color: _isFavorite ? null : const Color(0xFFF0F2F8),
                         borderRadius: BorderRadius.circular(18),
                         border: Border.all(
-                          color: isFavorite ? const Color(0xFFFF6B6B) : const Color(0xFFE5E7EB),
+                          color: _isFavorite ? const Color(0xFFFF6B6B) : const Color(0xFFE5E7EB),
                           width: 1.5,
                         ),
                       ),
                       child: Icon(
-                        isFavorite ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
-                        color: isFavorite ? const Color(0xFFFF6B6B) : const Color(0xFFB0B5C9),
+                        _isFavorite ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                        color: _isFavorite ? const Color(0xFFFF6B6B) : const Color(0xFFB0B5C9),
                         size: 24,
                       ),
                     ),
@@ -258,7 +282,7 @@ class ProductDetailsScreen extends StatelessWidget {
                   const SizedBox(width: 14),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => onAddToCart(product),
+                      onTap: () => widget.onAddToCart(widget.product),
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         decoration: BoxDecoration(

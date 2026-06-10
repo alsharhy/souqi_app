@@ -49,12 +49,16 @@ class ProductCard extends StatelessWidget {
                 ),
                 child: Stack(
                   children: [
-                    Center(
-                      child: Hero(
-                        tag: 'product_image_${product.id}',
-                        child: Text(
-                          product.image,
-                          style: const TextStyle(fontSize: 60),
+                    Positioned.fill(
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+                        child: Hero(
+                          tag: 'product_${product.id}',
+                          child: Image.network(
+                            product.image,
+                            fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.image_not_supported, color: Colors.grey)),
+                          ),
                         ),
                       ),
                     ),
