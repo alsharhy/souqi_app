@@ -20,23 +20,38 @@ class CartScreen extends StatelessWidget {
 
     return Column(
       children: [
-        PageHeader(title: 'سلة التسوق', subtitle: '${cart.length} منتج في السلة'),
+        PageHeader(title: 'سلة التسوق', subtitle: '${cart.length} منتجات في السلة'),
         Expanded(
           child: cart.isEmpty
               ? Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.shopping_bag_outlined, size: 80, color: Colors.grey[300]),
-                      const SizedBox(height: 16),
-                      const Text('سلة التسوق فارغة', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6C63FF).withOpacity(0.08),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(Icons.shopping_bag_outlined, size: 80, color: const Color(0xFF6C63FF).withOpacity(0.5)),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'سلة التسوق فارغة',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.w900, color: Color(0xFF2D3142)),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'تصفح المنتجات وأضف ما يعجبك هنا',
+                        style: TextStyle(fontSize: 14, color: Colors.grey[500], fontWeight: FontWeight.w500),
+                      ),
                     ],
                   ),
                 )
               : ListView.separated(
                   padding: const EdgeInsets.all(20),
                   itemCount: cart.length,
-                  separatorBuilder: (context, index) => const SizedBox(height: 12),
+                  separatorBuilder: (context, index) => const SizedBox(height: 16),
                   itemBuilder: (context, index) {
                     final item = cart[index];
                     final p = products.firstWhere((product) => product.id == item.productId);
@@ -44,48 +59,81 @@ class CartScreen extends StatelessWidget {
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 10)],
+                        borderRadius: BorderRadius.circular(24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 15,
+                            offset: const Offset(0, 5),
+                          )
+                        ],
                       ),
                       child: Row(
                         children: [
                           Container(
-                            width: 80,
-                            height: 80,
+                            width: 85,
+                            height: 85,
                             decoration: BoxDecoration(
                               gradient: getLightGradient(p.bg),
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                             ),
                             child: Center(child: Text(p.image, style: const TextStyle(fontSize: 40))),
                           ),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(p.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                Text(
+                                  p.name,
+                                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 14, color: Color(0xFF2D3142)),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(height: 6),
                                 Text(
                                   '${p.price * item.quantity} ر.س',
-                                  style: const TextStyle(color: Colors.indigo, fontWeight: FontWeight.w900),
+                                  style: const TextStyle(color: Color(0xFF6C63FF), fontWeight: FontWeight.w900, fontSize: 16),
                                 ),
+                                const SizedBox(height: 6),
                                 Row(
                                   children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.remove_circle_outline, size: 20),
-                                      onPressed: () {
+                                    GestureDetector(
+                                      onTap: () {
                                         if (item.quantity > 1) {
                                           item.quantity--;
                                           onUpdate();
                                         }
                                       },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFFF0F2F8),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Icon(Icons.remove_rounded, size: 18, color: Color(0xFF2D3142)),
+                                      ),
                                     ),
-                                    Text('${item.quantity}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                                    IconButton(
-                                      icon: const Icon(Icons.add_circle_outline, size: 20, color: Colors.indigo),
-                                      onPressed: () {
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                                      child: Text(
+                                        '${item.quantity}',
+                                        style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
                                         item.quantity++;
                                         onUpdate();
                                       },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xFF6C63FF).withOpacity(0.1),
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: const Icon(Icons.add_rounded, size: 18, color: Color(0xFF6C63FF)),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -93,7 +141,14 @@ class CartScreen extends StatelessWidget {
                             ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.delete_outline, color: Colors.red),
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFF6B6B).withOpacity(0.1),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(Icons.delete_outline_rounded, color: Color(0xFFFF6B6B), size: 20),
+                            ),
                             onPressed: () {
                               cart.removeAt(index);
                               onUpdate();
@@ -107,48 +162,86 @@ class CartScreen extends StatelessWidget {
         ),
         if (cart.isNotEmpty)
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 32),
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 20, offset: const Offset(0, -5))],
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.06),
+                  blurRadius: 20,
+                  offset: const Offset(0, -5),
+                )
+              ],
             ),
             child: Column(
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('الإجمالي', style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text('$total ر.س', style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const Text('المجموع الفرعي', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+                    Text('$total ر.س', style: const TextStyle(fontWeight: FontWeight.w800, color: Color(0xFF2D3142))),
                   ],
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 10),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('الشحن', style: TextStyle(color: Colors.grey)),
-                    Text(shipping == 0 ? 'مجاني' : '$shipping ر.س', style: TextStyle(color: shipping == 0 ? Colors.green : Colors.grey)),
+                    const Text('رسوم الشحن', style: TextStyle(fontWeight: FontWeight.w600, color: Colors.grey)),
+                    Text(
+                      shipping == 0 ? 'مجاني' : '$shipping ر.س',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        color: shipping == 0 ? const Color(0xFF10B981) : const Color(0xFF2D3142),
+                      ),
+                    ),
                   ],
                 ),
-                const Divider(height: 24),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Divider(color: Color(0xFFE5E7EB), thickness: 1),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('الإجمالي النهائي', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900)),
-                    Text('${total + shipping} ر.س', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Colors.indigo)),
+                    const Text('الإجمالي النهائي', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: Color(0xFF2D3142))),
+                    Text('${total + shipping} ر.س', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, color: Color(0xFF6C63FF))),
                   ],
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
+                  height: 56,
                   child: ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.indigo,
+                      backgroundColor: Colors.transparent,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      shadowColor: Colors.transparent,
+                      padding: EdgeInsets.zero,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     ),
-                    child: const Text('إتمام الشراء', style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF6C63FF), Color(0xFF8B5CF6)],
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF6C63FF).withOpacity(0.3),
+                            blurRadius: 15,
+                            offset: const Offset(0, 8),
+                          )
+                        ],
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'إتمام الشراء',
+                          style: TextStyle(fontWeight: FontWeight.w800, fontSize: 16),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
               ],
