@@ -23,63 +23,107 @@ class CategoryProductsScreen extends StatelessWidget {
     final categoryProducts = products.where((p) => p.categoryId == category.id).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: const Color(0xFFF0F2F8),
       body: Column(
         children: [
-          // Header
+          // Vibrant Category Header
           Container(
-            padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
+            padding: const EdgeInsets.fromLTRB(20, 50, 20, 28),
             decoration: BoxDecoration(
-              gradient: getGradient(category.color),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(32)),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  getColor(category.color, shade: 600),
+                  getColor(category.color, shade: 400),
+                  getColor(category.color, shade: 300),
+                ],
+              ),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(36)),
               boxShadow: [
                 BoxShadow(
-                  color: getColor(category.color).withOpacity(0.3),
-                  blurRadius: 20,
-                  offset: const Offset(0, 10),
+                  color: getColor(category.color).withOpacity(0.4),
+                  blurRadius: 25,
+                  offset: const Offset(0, 12),
                 ),
               ],
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // Decorative circles
+                Positioned(
+                  right: -30,
+                  top: -20,
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.08),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 40,
+                  bottom: -20,
+                  child: Container(
+                    width: 70,
+                    height: 70,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.06),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GestureDetector(
-                      onTap: () => Navigator.pop(context),
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(14),
+                            ),
+                            child: const Icon(Icons.arrow_back_rounded, color: Colors.white, size: 22),
+                          ),
                         ),
-                        child: const Icon(Icons.arrow_back, color: Colors.white, size: 20),
+                        Text(
+                          category.icon,
+                          style: const TextStyle(fontSize: 48),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      category.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
                       ),
                     ),
-                    Text(
-                      category.icon,
-                      style: const TextStyle(fontSize: 40),
+                    const SizedBox(height: 6),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        '${categoryProducts.length} منتج متاح',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                     ),
                   ],
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  category.name,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '${categoryProducts.length} منتج متاح',
-                  style: TextStyle(
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                  ),
                 ),
               ],
             ),
@@ -92,11 +136,18 @@ class CategoryProductsScreen extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.inventory_2_outlined, size: 80, color: Colors.grey[300]),
-                        const SizedBox(height: 16),
+                        Container(
+                          padding: const EdgeInsets.all(24),
+                          decoration: BoxDecoration(
+                            color: getColor(category.color).withOpacity(0.1),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.inventory_2_outlined, size: 60, color: getColor(category.color).withOpacity(0.4)),
+                        ),
+                        const SizedBox(height: 20),
                         const Text(
                           'لا توجد منتجات في هذا القسم',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: Color(0xFF9CA3AF)),
                         ),
                       ],
                     ),
@@ -105,15 +156,16 @@ class CategoryProductsScreen extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.75,
-                      crossAxisSpacing: 12,
-                      mainAxisSpacing: 12,
+                      childAspectRatio: 0.72,
+                      crossAxisSpacing: 14,
+                      mainAxisSpacing: 14,
                     ),
                     itemCount: categoryProducts.length,
                     itemBuilder: (context, index) {
                       final product = categoryProducts[index];
                       return ProductCard(
                         product: product,
+                        isFavorite: favorites?.contains(product.id) ?? false,
                         onTap: () {
                           if (onAddToCart != null && onToggleFavorite != null) {
                             Navigator.push(
